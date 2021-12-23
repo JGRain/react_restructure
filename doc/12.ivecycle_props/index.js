@@ -1,5 +1,5 @@
-import React from './react'
-import ReactDom from './react-dom'
+import React from 'react'
+import ReactDom from 'react-dom'
 let root = document.getElementById('root')
 
 class Counter extends React.Component {
@@ -22,7 +22,7 @@ class Counter extends React.Component {
 	render() {
 		console.log('父组件 3.render')
 		return (
-			<div id="counter">
+			<div>
 				<p>{this.state.number}</p>
 				{this.state.number === 4 ? null : (
 					<ChildCounter count={this.state.number} />
@@ -54,7 +54,7 @@ class ChildCounter extends React.Component {
 		console.log('子组件 2.render')
 		return (
 			<div>
-				<p id={`child-counter${this.props.count}`}>{this.props.count}</p>
+				<p>{this.props.count}</p>
 			</div>
 		)
 	}
@@ -76,6 +76,22 @@ class ChildCounter extends React.Component {
 }
 // element 是一个虚拟dom或者是一个react元素
 let element = <Counter />
+
+class Demo extends React.Component {
+	constructor() {
+		super()
+		this.state = { number: 0 }
+	}
+	render() {
+		let element
+		if (this.state.number > 1) {
+			element = null
+		} else {
+			element = <span>{this.state.number}</span>
+		}
+		return element
+	}
+}
 ReactDom.render(element, root)
 
 /**
