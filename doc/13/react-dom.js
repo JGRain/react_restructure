@@ -6,7 +6,6 @@ import { addEvent } from './event'
  * @param {*} container 擦入到哪个容器里
  */
 function render(vdom, container) {
-	console.log(Object.isFrozen(vdom))
 	const dom = createDom(vdom)
 
 	container.appendChild(dom)
@@ -36,7 +35,7 @@ export function createDom(vdom) {
 	} else {
 		dom = document.createElement(type) // span div
 	}
-	updateProps(dom, {}, props)
+	updateProps(dom, props)
 	if (
 		typeof props.children === 'string' ||
 		typeof props.children === 'number'
@@ -67,14 +66,11 @@ export function createDom(vdom) {
 function updateClassComponent(vdom) {
 	let { type, props } = vdom
 	let classInstance = new type(props) // new Weclome({name:'zhufeng})
-	console.log(22222, vdom, Object.isFrozen(vdom))
 	vdom.classInstance = classInstance // 让虚拟dom的classInstance = 类组件实例
 	if (classInstance.componentWillMount) {
 		classInstance.componentWillMount()
 	}
-	// 调用实例drender方法得到一个虚拟DOM对象或者说React元素 div
 	let renderVdom = classInstance.render() // <h1>hellow,zhufeng</h1>
-	// 通过虚拟DOM创建一个真实DOm //<div id="counter"><p>,childCounter,button</div>
 	const dom = createDom(renderVdom)
 	// 让类组件实例上挂一个dom指向类组件的实例的真实dom，setState会用到
 	vdom.dom = renderVdom.dom = dom //这个嘞虚拟DOM的dom属性和render方法返回的虚拟dom的dom属性都指向真实dom

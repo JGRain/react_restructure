@@ -102,13 +102,10 @@ class Component {
 		this.updater.addState(partialState)
 	}
 	forceUpdate() {
-		// 将更新
 		if (this.componentWillUpdate) {
 			this.componentWillUpdate()
 		}
-		// 我们现在要更新Counter这个类组件
 		let newVdom = this.render()
-		// oldVdom就是类的实例的render方法渲染得到的那个虚拟DOM，或者说React元素div
 		let currentVdom = compareTwoVdom(
 			this.oldVdom.dom.parentNode,
 			this.oldVdom,
