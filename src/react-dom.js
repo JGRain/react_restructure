@@ -31,7 +31,11 @@ export function createDOM(vdom) {
       return mountFunctionComponent(vdom);
     }
   } else {
-    dom = document.createElement(type);
+    if (type === 'react.fragment') {
+      dom = document.createDocumentFragment();
+    } else {
+      dom = document.createElement(type);
+    }
   }
   updateProps(dom, {}, props); // 更新属性 把虚拟dom上属性设置到真实DOM上
   // 处理子节点

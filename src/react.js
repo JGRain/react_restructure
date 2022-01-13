@@ -1,4 +1,5 @@
 import Component from './Component';
+export const reactFragement = 'react.fragement'; //Symbol('react.fragement')
 /**
  *
  * @param {*} type 元素的类型

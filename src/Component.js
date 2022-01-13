@@ -118,8 +118,8 @@ class Component {
     }
     let newVdom = this.render();
     newVdom = { ...newVdom };
-      let extraArgs =
-        this.getSnapshotBeforeUpdate && this.getSnapshotBeforeUpdate（
+    let extraArgs =
+      this.getSnapshotBeforeUpdate && this.getSnapshotBeforeUpdate();
     // oldVdom 就是类的实例的Render方法渲染得到的那个虚拟DOM，或者说React元素div
     let currentVdom = compareTwoVdom(
       this.oldVdom.dom.parentNode,
@@ -129,7 +129,7 @@ class Component {
     // 每次更新后，最新的Vdom会成为最新的上一次Vdon，等待下一次的更新比较
     this.oldVdom = currentVdom;
     if (this.componentDidUpdate) {
-      this.componentDidUpdate(this.props,this.state,extraArgs);
+      this.componentDidUpdate(this.props, this.state, extraArgs);
     }
     // updateClassComponent(this, renderVdom);
   }
