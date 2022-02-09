@@ -1,3 +1,9 @@
+## 目标
+温顾学习react特性，并能知晓其中实现原理，学习设计思路
+
+## 计划
+每周抽10个小时学习，争取两个月内完成react阶段课程的学习
+
 ## 1.JSX的执行过程
 1. 我们写代码的时候写的JSX`<h1>hello</h1>`
 2. 打包时候，会调用webpack中的babel-loader把JSX写法转换成JS写法 createElement
