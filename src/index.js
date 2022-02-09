@@ -1,59 +1,121 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-/**
- * hooks都是函数
- * 以use开头
- * 类组加需要创建实例 性能差
- * 1、每次组件渲染都是一个独立的闭包
- * 函数式更新
- */
 
-let lastState
+let hookStates = []
+let hookIndex = 0
+
 function useState(initalState) {
-	lastState =
-		lastState || typeof initalState === 'function' ? initalState() : initalState
+	hookStates[hookIndex] = hookStates[hookIndex] || initalState
+	let currentIndex = hookIndex
 	function setState(newState) {
-		if (typeof newState === 'function') {
-			lastState = newState(lastState)
-		} else {
-			lastState = newState
-		}
+		hookStates[currentIndex] = newState
 		render()
 	}
-	return [lastState, setState]
-}
-let lastRef
-function useRef() {
-	lastRef = lastRef || { current: null }
-	return lastRef
+	return [hookStates[hookIndex++], setState]
 }
 
-function Counter() {
-	let [number, setNumber] = useState(0)
-	let numberRef = useRef()
-
-	function alertNumber() {
-		setTimeout(() => {
-			setNumber((number) => number + 1) // number永远指定当时的渲染时的number，而不会指定最新的number值
-		}, 1000)
+function useMemo(factory, deps) {
+	if (hookStates[hookIndex]) {
+		let [lastMemo, lastDeps] = hookStates[hookIndex]
+		let same = deps.every((item, index) => item === lastDeps[index])
+		if (same) {
+			hookIndex++
+			return lastMemo
+		} else {
+			let newMeno = factory()
+			hookStates[hookIndex++] = [newMeno, deps]
+			return newMeno
+		}
+	} else {
+		//如果取不到
+		let newMeno = factory()
+		hookStates[hookIndex++] = [newMeno, deps]
+		return newMeno
 	}
+}
+
+function useCallback(callback, deps) {
+	if (hookStates[hookIndex]) {
+		let [lastCallback, lastDeps] = hookStates[hookIndex]
+		let same = deps.every((item, index) => item === lastDeps[index])
+		if (same) {
+			hookIndex++
+			return lastCallback
+		} else {
+			hookStates[hookIndex++] = [callback, deps]
+			return callback
+		}
+	} else {
+		//如果取不到
+		hookStates[hookIndex++] = [callback, deps]
+		return callback
+	}
+}
+
+function memo(OldComponent) {
+	return class extends React.PureComponent {
+		render() {
+			return <OldComponent {...this.props} />
+		}
+	}
+}
+
+/**
+ * useCallback
+ * useMemo
+ *
+ *
+ */
+let Child = ({ data, handleClick }) => {
+	console.log('Child render')
+	return <button onClick={handleClick}>{data.number}</button>
+}
+
+Child = memo(Child)
+function App() {
+	console.log('App render')
+	const [number, setNumber] = useState(0)
+
+	let data = useMemo(
+		() => ({
+			number,
+		}),
+		[number]
+	)
+
+	let handleClick = useCallback(() => {
+		setNumber((x) => x + 1)
+	}, [number])
+
+	const [name, setName] = useState('zhufeng')
+
 	return (
 		<div>
-			<p>{number}</p>
-			<button
-				onClick={() => {
-					setNumber(number + 1)
-					numberRef.current = number + 1
+			<input
+				value={name}
+				onChange={(e) => {
+					setName(e.target.value)
 				}}
-			>
-				{' '}
-				+
-			</button>
-			<button onClick={alertNumber}>alertNumber</button>
+			/>
+			<Child data={data} handleClick={handleClick} />
 		</div>
 	)
 }
 function render() {
-	ReactDOM.render(<Counter />, document.getElementById('root'))
+	hookIndex = 0
+	ReactDOM.render(<App />, document.getElementById('root'))
 }
 render()
+
+/**  
+ * (alias) useMemo<{
+    number: number;
+}>(factory: () => {
+    number: number;
+}, deps: React.DependencyList): {
+    number: number;
+}
+ * 
+ * 
+ * 
+*/
