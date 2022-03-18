@@ -1,70 +1,37 @@
-# Getting Started with Create React App
+## 1、useState
+- 定义状态然后获得状态和改变状态的函数
+- 如果状态变更逻辑简单，可以使用useState1
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 2、useReducer
+- useState只是useReducer的语法糖或者说简单使用
+- 当你变更状态逻辑比较复杂的时候就要用useReducer
 
-## Available Scripts
+## 3、useCallback
+- 都有依赖项
+- 如果依赖项数组的变化了就重新得到新的函数，如果没用就用老的函数
 
-In the project directory, you can run:
+## 4、useMemo
+- 都有依赖项
+- 如果依赖项数组的变化了就重新得到新的函数，如果没用就用老的对象
+  
+第一个作用
+因为函数组件默认情况下根本不考虑属性变了没用，不管变没变都会更新渲染
+- React.memo()配合，因为经过memo处理过的组件，当属性变化了回更新渲染，如果没有变化不重新渲染
+第二个作用
+- 可以减少计算量，可以缓存结果
 
-### `yarn start`
+## 5、useContext
+- 从上下文对象中获取value privider._currentValue获取一个值
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 6、useEffect 和 useLayoutEffect
+- 都是处理副作用的，可以调用数据接口，改变外部变量
+- 都是组件渲染之后执行
+- useLayoutEff是在浏览器渲染之前执行
+- useEffect是在浏览器渲染之后执行
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 7、useRef
+- 类型React.createRef()
+- current是可以改的，但是ref对象是保持不变的
+- forwardRef 如果想给函数组件添加ref的话，就必须让函数组件传给forwardRed来包裹一下
+- useImperativeHandle 使用声明式处理，可以在组件内部自定义博爱路给外部的ref对象，保护内部的DOM元素不能被任意修改
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
