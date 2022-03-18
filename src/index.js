@@ -11,17 +11,17 @@ const PAGE_SIZE = 5
 function useRequest(url) {
 	let [start, setStart] = useState(0)
 	let [users, setUsers] = useState([])
-	function loadMore() {
+	async function loadMore() {
 		setUsers(null)
-		fetch(`${url}?start=${start}&pageSize=${start + PAGE_SIZE}`)
-			.then((res) => {
-				console.log('res', res)
-				return res.json()
-			})
-			.then((pageDate) => {
-				setUsers([...users, ...pageDate])
-				setStart(start + PAGE_SIZE)
-			})
+		let pageDate = await fetch(
+			`${url}?start=${start}&pageSize=${start + PAGE_SIZE}`
+		).then((res) => {
+			console.log('res', res)
+			return res.json()
+		})
+
+		setUsers([...users, ...pageDate])
+		setStart(start + PAGE_SIZE)
 	}
 	useEffect(loadMore, [])
 	return [users, loadMore]
