@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			function sleep(delay) {
+				for (let ts = Date.now(); Date.now() - ts <= delay; ) {}
+			}
+			const works = [
+				() => {
+					console.log('任务1： start')
+					sleep(0)
+					console.log('任务1： end')
+				},
+				() => {
+					console.log('任务2： start')
+					sleep(0)
+					console.log('任务2： end')
+				},
+				() => {
+					console.log('任务3： start')
+					sleep(0)
+					console.log('任务3： end')
+				},
+				() => {
+					console.log('任务4： start')
+					sleep(0)
+					console.log('任务4： end')
+				},
+			]
+			requestIdleCallback(workLoop)
+			function workLoop(deadline) {
+				console.log(`本针的剩余时间是${parseInt(deadline.timeRemaining())}`)
+				while (deadline.timeRemaining() > 1 && works.lengtth > 0) {
+					performUnitOfWork()
+				}
+				// 如果本针没有剩余时间了，或者任务已经全干完了
+				if (works.length > 0) {
+					// 如果还有工作要赶，则说明任务还没有干完
+					requestIdleCallback(workLoop)
+				}
+			}
+			function performUnitOfWork() {
+				let work = works.shift()
+				work()
+			}
+		</script>
+	</body>
+</html>
