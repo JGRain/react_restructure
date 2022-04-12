@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 事件委托对象不再是document 而是挂在的容器了 -->
+    <!-- 1、可以让一个页面可以使用多个react版本 -->
+    <div id="root">
+      <div id="parent">
+        <div id="children">孩子</div>
+      </div>
+    </div>
+    <script>
+      function dispatchEvent(event, useCapture) {
+        let paths = []
+        let current = event.target
+        while (current) {
+          paths.push(current)
+          current = current.parentNode
+        }
+        if (useCapture) {
+          // 模拟捕获和冒泡 其实这个时候原生的捕获阶段已结束
+          for (let index = paths.length - 1; index >= 0; index--) {
+            const handler = paths[index].onClickCapture
+            handler && handler()
+          }
+        } else {
+          for (let index = 0; index < paths.length; index++) {
+            const handler = paths[index].onClick
+            handler && handler()
+          }
+        }
+      }
+      const root = document.getElementById('root')
+      const parent = document.getElementById('parent')
+      const children = document.getElementById('children')
+      root.addEventListener('click', (event) => dispatchEvent(event, true), true) // true=useCapture注册一个捕获事件
+      root.addEventListener('click', (event) => dispatchEvent(event, false))
+
+      document.addEventListener(
+        'click',
+        () => {
+          console.log('document原生捕获')
+        },
+        true,
+      )
+      document.addEventListener('click', () => {
+        console.log('document原生冒泡')
+      })
+      root.addEventListener(
+        'click',
+        () => {
+          console.log('root元素原生捕获')
+        },
+        true,
+      )
+      root.addEventListener('click', () => {
+        console.log('root元素原生冒泡')
+      })
+      parent.addEventListener(
+        'click',
+        () => {
+          console.log('父元素原生捕获')
+        },
+        true,
+      )
+      parent.addEventListener('click', () => {
+        console.log('父元素原生冒泡')
+      })
+      children.addEventListener(
+        'click',
+        () => {
+          console.log('子元素原生捕获')
+        },
+        true,
+      )
+      children.addEventListener('click', () => {
+        console.log('子元素原生冒泡')
+      })
+
+      root.onClick = function () {
+        console.log('root元素React事件冒泡')
+      }
+      root.onClickCapture = function () {
+        console.log('root元素React事件捕获')
+      }
+      parent.onClick = function () {
+        console.log('父亲元素React事件冒泡')
+      }
+      parent.onClickCapture = function () {
+        console.log('父亲元素React事件捕获')
+      }
+      children.onClick = function () {
+        console.log('子元素React事件冒泡')
+      }
+      children.onClickCapture = function () {
+        console.log('子元素React事件捕获')
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      document.addEventListener('click', (event) => {
+        // event.stopPropagation() //不在向上冒泡了，但是本身元素剩下的监听函数还是会执行
+        event.stopImmediatePropagation() //不在向上冒泡了，本身元素剩下的监听函数也不执行
+        console.log(1)
+      })
+      document.addEventListener('click', (event) => {
+        console.log(2)
+      })
+    </script>
+  </body>
+</html>
