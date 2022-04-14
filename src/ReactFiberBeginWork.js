@@ -10,17 +10,39 @@ import { renderWithHooks } from './ReactFiberHooks'
  * @param {*} unitOfWork 这一次正在构建中的Fiber
  */
 export function beginWork(current, workInProgress) {
-	switch (workInProgress.tag) {
-		case IndeterminateComponent:
-			return mountIndeterminateComponent(
-				current,
-				workInProgress,
-				workInProgress.type
-			)
+	if (current) {
+		switch (workInProgress.tag) {
+			case FunctionComponent: // 函数组件
+				return updateFunctionComponent(
+					current,
+					workInProgress,
+					workInProgress.type
+				)
 
-		default:
-			break
+			default:
+				break
+		}
+	} else {
+		switch (workInProgress.tag) {
+			case IndeterminateComponent:
+				return mountIndeterminateComponent(
+					current,
+					workInProgress,
+					workInProgress.type
+				)
+
+			default:
+				break
+		}
 	}
+}
+function updateFunctionComponent(current, workInProgress, Component) {
+	const newChildren = renderWithHooks(current, workInProgress, Component)
+	console.log('children', newChildren)
+	window.counter = newChildren
+	// 根据儿子的或者上面返回的虚拟DOm侯建fiber子树
+	reconcileChildren(current, workInProgress, newChildren)
+	return null
 }
 function mountIndeterminateComponent(current, workInProgress, Component) {
 	const children = renderWithHooks(current, workInProgress, Component)

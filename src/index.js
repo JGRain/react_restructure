@@ -7,7 +7,7 @@ import {
 	IndeterminateComponent,
 } from './ReactWorkTags'
 import { render } from './ReactFiberWorkLoop.js'
-import { useReducer } from './ReactFiberHooks'
+import { useReducer, useState } from './ReactFiberHooks'
 // redux 接受老状态和动作，返回新状态
 const reducer = (state, action) => {
 	if (action.type === 'add') {
@@ -17,11 +17,11 @@ const reducer = (state, action) => {
 	}
 }
 function Counter() {
-	const [number, setNumber] = useReducer(reducer, 0)
+	const [number, setNumber] = useState(0)
 	return (
 		<div
 			onClick={() => {
-				setNumber({ type: 'add' })
+				setNumber(number + 1)
 			}}
 		>
 			{number}
