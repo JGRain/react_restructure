@@ -27,7 +27,7 @@ export function render(fiber) {
 export function schrduleUpdateOnFiber(oldFiber) { // current Fiber
 	let newFiber = {
 		...oldFiber,
-		alyernate: oldFiber,
+		alternate: oldFiber,
 	}
 	workInProress = newFiber
 	workLoop()

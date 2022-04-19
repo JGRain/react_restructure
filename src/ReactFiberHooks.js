@@ -18,17 +18,22 @@ function basicStateReducer(state, action) {
 function updateState(initialState) {
 	return updateReducer(basicStateReducer, initialState)
 }
-function mountState(reducer, initialArg) {
+function mountState(initialArg) {
 	// 构建 hooks单项链表
 	let hook = mountWorkInprogressHook() // 获取当前的hook
 	hook.memoizedState = initialArg // 0
-	const queue = (hook.queue = { pending: null }) //更新队列
+	const queue = (hook.queue = {
+		pending: null,
+		lastRenderedReducer: basicStateReducer,
+		lastRenderedState: initialArg,
+	}) //更新队列
 	const dispatch = dispatchAction.bind(null, currentlyRendderingFiber, queue)
 	return [hook.memoizedState, dispatch]
 }
 export function updateReducer(reducer, initialArg) {
 	let hook = updateWorkInprogressHook() //更新的时候也要构建一个新的hook链表
 	let queue = hook.queue // 更新队列
+	let lastRenderedReducer = queue.lastRenderedReducer // 上一个reducer方法
 	let current = currentHook
 	const pendingQueue = queue.pending // update的环装链表
 	if (pendingQueue !== null) {
@@ -43,6 +48,7 @@ export function updateReducer(reducer, initialArg) {
 		} while (update !== null && update !== first)
 		queue.pending = null //更新过来可以清空更新幻想链表
 		hook.memoizedState = newState // 让新的hook对象的memoizedState等于计算的新状态
+		queue.lastRenderedState = newState // 把新状态复制给lastRenderedState一份
 	}
 	const dispatch = dispatchAction.bind(null, currentlyRendderingFiber, queue)
 	return [hook.memoizedState, dispatch]
@@ -103,7 +109,8 @@ function mountReducer(reducer, initialArg) {
 	const dispatch = dispatchAction.bind(null, currentlyRendderingFiber, queue)
 	return [hook.memoizedState, dispatch]
 }
-function dispatchAction(currentlyRendderingFiber, queue, action) {
+function dispatchAction (currentlyRendderingFiber, queue, action) {
+  debugger
 	const update = { action, next: null } // 创建一个update对象
 	const pending = queue.pending
 	if (pending === null) {
@@ -114,7 +121,14 @@ function dispatchAction(currentlyRendderingFiber, queue, action) {
 	}
 	queue.pending = update
 	console.log('queue.pending', queue.pending)
-	schrduleUpdateOnFiber()
+	const lastRenderedReducer = queue.lastRenderedReducer // 获取老的reducer
+  const lastRenderedState = queue.lastRenderedState // 获取老的state
+  // 不需要等到重新再次调试到Counter组件计算
+	let eagerState = lastRenderedReducer(lastRenderedState)
+	if (Object.is(eagerState, lastRenderedState)) {
+		return
+	}
+	schrduleUpdateOnFiber(currentlyRendderingFiber)
 }
 function mountWorkInprogressHook() {
 	let hook = {
